@@ -1,13 +1,35 @@
-# Step by Step Project Setup
-With the information provided, you can build a website using the Vue framework that incorporates both the US Web Design System (USWDS) and the standard USGS headers and footers.
+# Testing area for WBEEP 
+This project is intended to be a model for the Water Budget Estimation and Evaluation Project (WBEEP).
+With the information provided, you can build a website using the Vue framework that incorporates Leaflet maps using the Vue2leaflet plugin to provide Vue style components for the map layers. 
 
 Image 1: Example of Final Product 
 ![alt text](./markDownImages/Sample.png "Image of expected output")
 
 ### Background
-Vue CLI (command line interface) is a full system for rapid Vue.js development that provides project scaffolding, a instantly updating development server, a graphic user interface and much more. Vue CLI is not Vue.js; it is Vue.js plus many additional user friendly features. Vue CLI is not required to create a Vue.js project, but it is a slick way of doing so.
+This project builds on the project 'makerspace-website-base' ( https://github.com/usgs-makerspace/makerspace-website-base ), which provides useful information on creating projects using the Vue framework. Expanding on what was created in 'makerspace-website-base', this project adds a Leaflet map with Vue-like component map layers using the Vue2Leaflet plugin. The Leaflet documentation offers an 'Interactive Choropleth Map' example that seemed like a good model for what is needed in WBEEP. The example creates a Leaflet map layer that takes in geojson and produces the outlines of US states. This layer is then overlaid on a set of map tiles. In the Leaflet example, Mapbox tiles are used. In this project OpenStreetMap tiles are used. Mapbox required a registration key, while OpenStreetmap did not. So to avoid adding additional complications, OpenStreetMap was used. 
 
-### Install Vue CLI globally
+####IDEAS!
+It seems that the Leaflet Choropleth example provides much of the what is needed in WBEEP. I believe that we can use a geojson layer showing states boundaries as the initial layer. The example has a 'click to zoom feature' that would be ideal for users to use to zone in on the region they want to explore. After the zoom, we could allow a second layer of geojson with the Hydrological Response unit (HRU) boundaries that could also be clickable to zoom into the data for each HRU. Perhaps, we could also add an intermediate layer that would allow clicking down to a county level . . . (One caveat, I did not have time to get the click-to-zoom working, but I mostly understand the pattern now, and I think it is very possible) 
+
+### Install Leaflet and Vue2Leaflet in to the project
+Leaflet is an open-source mapping library for displaying data on maps. Vue2Leaflet allows Leaflet map layers to work within the Vue framework as a set of Vue components. 
+
+General Leaflet information: https://leafletjs.com/
+
+Valuable Leaflet code example demonstrating . . .
+
+    creation of interactive geojson layer: https://leafletjs.com/examples/choropleth/
+
+General Vue2Leaflet information: https://www.npmjs.com/package/vue2-leaflet  
+
+Valuable Vue2Leaflet code examples that demonstrate . . .
+
+    multiple geojson layers: https://github.com/KoRiGaN/Vue2Leaflet/blob/master/examples/src/components/GeoJSON2.vue
+
+    layer styling and map markers: https://github.com/KoRiGaN/Vue2Leaflet/blob/master/examples/src/components/GeoJSON.vue
+
+
+
 Use Node Package Manager (NPM) to install Vue CLI. You will need to have Node.js installed on your system for this to work. You can test if you have Node.js installed with this command.
 ```
 node -v
