@@ -1,6 +1,6 @@
 # Testing area for WBEEP 
 This project is intended to be a model for the Water Budget Estimation and Evaluation Project (WBEEP).
-With the information provided, you can build a website using the Vue framework that incorporates Leaflet maps using the Vue2leaflet plugin to provide Vue style components for the map layers. 
+With the information provided, you can build a website using the Vue framework that incorporates Leaflet maps using the Vue2Leaflet plugin to provide Vue style components for the map layers. 
 
 Image 1: Example of Final Product 
 ![alt text](./markDownImages/Sample.png "Image of expected output")
@@ -8,11 +8,24 @@ Image 1: Example of Final Product
 ### Background
 This project builds on the project 'makerspace-website-base' ( https://github.com/usgs-makerspace/makerspace-website-base ), which provides useful information on creating projects using the Vue framework. Expanding on what was created in 'makerspace-website-base', this project adds a Leaflet map with Vue-like component map layers using the Vue2Leaflet plugin. The Leaflet documentation offers an 'Interactive Choropleth Map' example that seemed like a good model for what is needed in WBEEP. The example creates a Leaflet map layer that takes in geojson and produces the outlines of US states. This layer is then overlaid on a set of map tiles. In the Leaflet example, Mapbox tiles are used. In this project OpenStreetMap tiles are used. Mapbox required a registration key, while OpenStreetmap did not. So to avoid adding additional complications, OpenStreetMap was used. 
 
-####IDEAS!
+#### IDEAS!
 It seems that the Leaflet Choropleth example provides much of the what is needed in WBEEP. I believe that we can use a geojson layer showing states boundaries as the initial layer. The example has a 'click to zoom feature' that would be ideal for users to use to zone in on the region they want to explore. After the zoom, we could allow a second layer of geojson with the Hydrological Response unit (HRU) boundaries that could also be clickable to zoom into the data for each HRU. Perhaps, we could also add an intermediate layer that would allow clicking down to a county level . . . (One caveat, I did not have time to get the click-to-zoom working, but I mostly understand the pattern now, and I think it is very possible) 
 
+## Get Started - Create Your Project
+##### Create Your Project - option 1 - clone or download the complete project
+This is the fastest way, and if you already have a background in Vue, go ahead fork the repo and clone/download away.
+
+##### Create Your Project - option 2 -The Step by Step from the Beginning
+If you are not familiar with the Vue framework and have not completed the first 'step-by-step' section of this project ( https://github.com/usgs-makerspace/makerspace-website-base ), you may find value in checking that out.
+
+##### Create Your Project -option 3 - Download the Base Project and then Add Leaflet 
+This is the best option if you want to learn about using Leaflet with Vue, are familiar with Vue or have gone through the 'step-by-step' tutorial ( https://github.com/usgs-makerspace/makerspace-website-base ), and want to know more about how the Vue2Leaflet plugin fits into the picture. The remainder of this readme deals with this option.
+
+### Get the base project
+The base project is at https://github.com/usgs-makerspace/makerspace-website-base . On the repository home page, hit green 'Clone or download' button and then select 'Download ZIP'. Extract the ZIPed files to a directory of your choice and change root directory of 'makerspace-base-wbeep'. Once there, run 'npm install' to pull down the project dependencies. Then, run the project according to the 'Running the Project' instruction in the repository.
+
 ### Install Leaflet and Vue2Leaflet in to the project
-Leaflet is an open-source mapping library for displaying data on maps. Vue2Leaflet allows Leaflet map layers to work within the Vue framework as a set of Vue components. 
+Once the base project up and running you can move on getting a Leaflet map running. Leaflet is an open-source mapping library for displaying data on maps. We will also add a Vue plugin called Vue2Leaflet which allows Leaflet map layers to work within the Vue framework as a set of Vue components. 
 
 General Leaflet information: https://leafletjs.com/
 
@@ -30,20 +43,147 @@ Valuable Vue2Leaflet code examples that demonstrate . . .
 
 
 
-Use Node Package Manager (NPM) to install Vue CLI. You will need to have Node.js installed on your system for this to work. You can test if you have Node.js installed with this command.
+Use Node Package Manager (NPM) to install Leaflet and Vue2Leaflet. You can install them both in a single command.
 ```
-node -v
+npm install vue2-leaflet leaflet --save
 ```
+You may get a warning reguarding a peer dependency for Vue2Leaflet
+```
+vue2-leaflet@2.1.1 requires a peer of @types/leaflet@^1.2.11 but none is installed. You must install peer dependencies yourself.
+
+```
+I am not sure if it is necessary, but it does not seem to hurt to install the peer dependency. 
+```
+npm install @types/leaflet@^1.2.11
+```
+Your 'package.json' file should now look something like . . .
+```
+{
+  "name": "vue_wbeep",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "@types/leaflet": "^1.4.4",
+    "core-js": "^2.6.5",
+    "leaflet": "^1.5.1",
+    "uswds": "^2.0.2",
+    "vue": "^2.6.10",
+    "vue2-leaflet": "^2.1.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.8.0",
+    "@vue/cli-plugin-eslint": "^3.8.0",
+    "@vue/cli-service": "^3.8.0",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.16.0",
+    "eslint-plugin-vue": "^5.0.0",
+    "node-sass": "^4.9.0",
+    "sass-loader": "^7.1.0",
+    "vue-template-compiler": "^2.6.10"
+  }
+}
+```
+Give your project a test run using Vue UI or the Vue CLI development server.
+```
+vue ui      // starts the Graphic User Interface you can use to run the project
+npm run serve  // starts the Vue CLI server 
+```
+At this point, Vue UI it will occasionally throw a compiling error related to node-sass bindings. If you get an error, check the console output for the solution on how to fix the bindings.
+
+### Add the Leaflet Map
+Since the Vue framework keeps all of our page parts (header, footer, content, etc.) compartmentalized as components, we once the needed dependencies are installed we will only have to worry about code that exist in the component we want to change. In this case, that component will be 'Visualization.vue'
+
+This project is based on a combination of three examples gathered from Leaflet and Vue2Leaflet documentation (see above for the links). The main example used is https://leafletjs.com/examples/choropleth/ . This example is specific to Leaflet and the purpose of this project is to adapt the example for use with Vue. To make this process a bit more Vue-like, we will use the Vue2Leaflet plugin.
+
+#### Import the Leaflet and Vue2Leaflet Modules
+In the NPM Install step we asked NPM to pull the modules down from the NPM repository, now we need to tell Vue where in our project they should be used. This will be done the 'script' element of 'Visualization.vue' (the visualization component).
+```
+<script>
+    import L from 'leaflet';  // ADDED - import the 'L' export of the 'leaflet' module
+    import { LMap, LTileLayer, LMarker, LGeoJson } from 'vue2-leaflet'; // ADDED  
+    
+    export default {
+        name: 'Visualization',
+        props: {
+            msg: String
+        }
+    }
+</script>
+```
+If you save now, the development server will show several 'unused import errors'. These are 'linting' errors (code cleaning) errors that will not stop the project from running. We will take care of them in a bit.
+
+According the Leaflet example to add the map to our page, we should do this  . . . 
+```
+var mapboxAccessToken = {your access token here};
+var map = L.map('map').setView([37.8, -96], 4);
+
+L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=' + mapboxAccessToken, {
+    id: 'mapbox.light',
+    attribution: ...
+}).addTo(map);
+
+L.geoJson(statesData).addTo(map);
+```
+This will not work without a little tweaking.
+
+To start we need to give our map a place to go on the page. In regular, Leaflet this would be done with a 'div' element with id of 'map' or something similar, but the Vue2Leaflet will give us a better option.
+```
+<div id='map'></div> // the regular Leaflet way
+
+<l-map ref="map"><l-map> // the Vue2Leaflet way
+```
+Vue2Leaflet allows us to 'component-ize' our layers. The 'l-map' element is actually a Vue component. 
+Add the 'l-map' element (component) to the 'template' element.
+
+```
+<template>
+    <div id="visualization">
+        <img alt="USGS Logo" src="../assets/USGS_logo_green.svg">
+        <h1>{{ msg }}</h1>
+        <l-map ref="map"></l-map> // added this element
+    </div>
+</template>
+```
+
+As a note, I could not find any comprehensive Vue2Leaflet documentation, so most of the what is covered here was discovered experimentally.
+
+Anyway, back to the 'l-map' component. Just as was mentioned in the previous tutorial for 'makerspace-website-base', in order for Vue to use a component, it has to be registered. This is done in the 'export' section of the 'script' tag.
+
+```
+<script>
+    import L from 'leaflet';
+    import { LMap, LTileLayer, LMarker, LGeoJson } from 'vue2-leaflet';
+
+    export default {
+        name: 'Visualization',
+        props: {
+            msg: String
+        },            // don't forget the comma  
+        components: { // registered the LMap component
+            LMap      // registered the LMap component
+        }             // don't forget the closing brace  
+    }
+</script>
+```
+For Vue to use a component, three things are needed: 1) an import, 2) registration as a component, 3) an element added to the template.
+
+Once the component is added, you will notice that we have one less 'unused import error' on the development server output. However, the 'l-map' component will not show on the server's web page, because it has no content. To give it content we will apply some 'attributes' to the 'l-map' element tag.
+
+This is a Vue2Leaflet thing. We imported the Vue2Leaflet export 'LMap' and 'LMap' has special 'component' abilities.  
+
+
+
+If the project compli
 Node.js contains NPM. If you don't have it, do an internet search for 'install node.js' and follow the instructions. Once NPM is ready, you can install Vue CLI. Install this globally using the '-g' option so that it will be available from any directory while working from the command line. 
 
 ```
 npm install -g @vue/cli
 ```
-## Create Your Project
-##### Create Your Project - option 1 -The Lazy way (the smart way?)
-Clone this project. For more information on Git cloning check out the documentation on GitHub. Once the project is cloned you can jump down a few sections in this document until you reach the section on 'Generalized Setup Information.' If you need more guidance, jump back up a bit to the section on 'Running the Project.'
-
-##### Create Your Project - option 2 -The Step by Step Way
 This section will lead you through creating a Vue project that utilizes the US Web Design System (USWDS) and the standard USGS headers and footers.
 
 ##### Step One - Use Vue to Scaffold your project
