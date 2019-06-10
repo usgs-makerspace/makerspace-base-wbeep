@@ -61,7 +61,6 @@
         },
         data () {
             return {
-                loading: false,
                 zoom: 5,
                 center: L.latLng(43.092641, -89.532142),
                 url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
